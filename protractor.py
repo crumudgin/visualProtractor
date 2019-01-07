@@ -2,9 +2,10 @@ import numpy as np
 import cv2
 import queue
 import imutils
+import math
 
 
-ACCEPED_VARIENCE = (30, 30, 30)
+ACCEPED_VARIENCE = (50, 50, 50)
 
 COLOR_ONE = None
 
@@ -23,7 +24,9 @@ def run_camera(camera_source):
 		cv2.imshow("frame", frame)
 		img = preprocess_image(frame)
 		if COLOR_ONE is not None:
-			mask_color(img)
+			find_contours(mask_color(img), frame)
+			cv2.imshow("tracking", frame)
+
 
 		# gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 		# edge_frame = canny_edge_detection(gray)
@@ -54,6 +57,21 @@ def mask_color(img):
 	mask = cv2.dilate(mask, None, iterations=2)
 	cv2.imshow("mask", mask)
 	return mask
+
+def find_contours(mask, img):
+	contours = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+	contours = imutils.grab_contours(contours)
+
+	if len(contours) > 0:
+		rect_contour = max(contours, key=cv2.contourArea)
+		rect = cv2.minAreaRect(rect_contour)
+		# print(rect)
+		box = cv2.boxPoints(rect)
+		x1, y1 = box[0]
+		x2, y2 = box[1]
+		print(math.sqrt((x2 - x1) ** 2 + (y2 - y1) **2))
+		box = np.int0(box)
+		cv2.drawContours(img, [box], 0, (0, 0, 255), 2)
 
 def main():
 	run_camera(0)
