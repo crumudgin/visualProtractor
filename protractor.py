@@ -9,10 +9,7 @@ def run_camera(camera_source):
 		ret, frame = cap.read()
 
 		gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-
-		# cv2.imshow("frame", gray)
 		edge_frame = canny_edge_detection(gray)
-		# cv2.namedWindow("edges")
 		if cv2.waitKey(1) & 0xFF == ord("q"):
 			break
 
@@ -33,33 +30,21 @@ def get_index_neighbors(x, y):
 		return []
 
 def dijkstras_modified_helper(img, x, y, next):
-	# print(x, y)
 	if img[x, y] == 0:
-		img[x, y] = 255
-		# if len([j for j in get_index_neighbors(x, y) if img[j[0], j[1]] == 0]) == 4:
-
+		img[x, y] = 1
 		for i in get_index_neighbors(x, y):
 			next.put(i)
-	# else:
-	# 	print(img[x, y])
 	return img
 
 def dijkstras_modified(img, x, y, next):
 	print(x, y)
 	img = dijkstras_modified_helper(img, x, y, next)
-	# counter = 100000
 	while next.empty() is False:
-		# if counter <= 0:
-			# return img
 		x, y = next.get()
 		img = dijkstras_modified_helper(img, x, y, next)
-		# counter -= 1
 	return img
 
 def isolate_object(img, x, y):
-	# make matrix of zeros in the same shape as the image
-	# starting at the x, y coordanites dijkstras out until you hit an edge
-	# the result will be the inner area of the edge
 	img_copy = img.copy()
 	print(img_copy.shape)
 	img_copy = cv2.dilate(img_copy, np.ones((3,3)), iterations = 1)
@@ -68,6 +53,12 @@ def isolate_object(img, x, y):
 	img_copy = cv2.erode(img_copy, np.ones((3,3)), iterations = 1)
 	img_copy = cv2.dilate(img_copy, np.ones((3,3)), iterations = 1)
 	img_copy = dijkstras_modified(img_copy, x, y, queue.Queue())
+	for i in range(img_copy.shape[0]):
+		for j in range(img_copy.shape[1]):
+			if img_copy[i, j] != 1:
+				img_copy[i, j] = 0
+			else:
+				img_copy[i, j] = 255
 	cv2.imshow("object", img_copy)
 
 def process_click(event, x, y, flags, params):
@@ -75,7 +66,7 @@ def process_click(event, x, y, flags, params):
 		isolate_object(process_click.img, y, x)
 
 def main():
-	run_camera(1)
+	run_camera(0)
 
 if __name__ == '__main__':
 	main()
