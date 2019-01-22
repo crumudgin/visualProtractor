@@ -9,6 +9,12 @@ Class to measure the angle of an object in an image
 """
 class Protractor:
 
+	"""
+	Peramiters: accepted_varience - the acceptable varience within the color space
+				camera_source - the camera to read from
+				morphology_func - any function that takes a image and returns a black and white image
+				shape_func -  any function that takes contours and and an image, and returns an integer
+	"""
 	def __init__(self, accepted_varience, camera_source, morphology_func, shape_func):
 		self.accepted_varience = accepted_varience
 		self.camera_source = camera_source
