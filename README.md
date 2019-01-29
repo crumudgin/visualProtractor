@@ -6,7 +6,7 @@ When running:
 1. A window of the video stream will pop up, the user must select an item by clicking on it.
 2. At this point 2 new windows will pop up, the first is the mask being applied to detect the object, the second is a bounding box being drawn around the object.
 3. When the user is satisfied with the initial position of the object they can press "r" to set this as the position to base all future measurements from.
-4. The user can now rotate the object along the z access and read the change in angle in the terminal.
+4. The user can now rotate the object along the z access and read the change in angle in the console.
 
 
 Things to keep in mind:
