@@ -8,12 +8,9 @@ Class to measure the angle of an object in an image
 """
 class Protractor:
 
-	color_one = None
-	max_height = 0
-	current_img = None
 
 	"""
-	Peramiters: accepted_varience - the acceptable varience within the color space
+	Parameters: accepted_varience - the acceptable varience within the color space
 				camera_source - the camera to read from
 				morphology_func - any function that takes a image and returns a black and white image
 				shape_func -  any function that takes contours and and an image, and returns an integer
@@ -22,11 +19,14 @@ class Protractor:
 		self.accepted_varience = accepted_varience
 		self.camera_source = camera_source
 		self.set_funcs(morphology_func, shape_func)
+		self.color_one = None
+		self.max_height = 0
+		self.current_img = None
 		
 		
 
 	"""
-	Peramiters: img - the image to preprocess
+	Parameters: img - the image to preprocess
 	Returns: the preprocessed image
 	Description: Performs necissary operations on the provided image before obejct detection can be performed
 	"""
@@ -38,7 +38,7 @@ class Protractor:
 		return img
 
 	"""
-	Peramiters: img - the black and white image to apply the morphology too
+	Parameters: img - the black and white image to apply the morphology too
 				rounds - the number of times the morphology should be applied
 	Returns: the image with the given morphology applied
 	Description: Closes small unatural gaps in a black and white image
@@ -51,7 +51,7 @@ class Protractor:
 		return img
 
 	"""
-	Peramiters: mask - the black and white image whos contours will be discovered
+	Parameters: mask - the black and white image whos contours will be discovered
 	Returns: the contours of the provided mask
 	Description: fins the contours of the provided image so the object can be found within the image
 	"""
