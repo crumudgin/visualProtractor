@@ -1,6 +1,5 @@
 import numpy as np
 import cv2
-import queue
 import imutils
 import math
 
@@ -9,20 +8,22 @@ Class to measure the angle of an object in an image
 """
 class Protractor:
 
+	color_one = None
+	max_height = 0
+	current_img = None
+
 	"""
 	Peramiters: accepted_varience - the acceptable varience within the color space
 				camera_source - the camera to read from
 				morphology_func - any function that takes a image and returns a black and white image
 				shape_func -  any function that takes contours and and an image, and returns an integer
 	"""
-	def __init__(self, accepted_varience, camera_source, morphology_func, shape_func):
+	def __init__(self, accepted_varience, camera_source, morphology_func = None, shape_func = None):
 		self.accepted_varience = accepted_varience
 		self.camera_source = camera_source
-		self.morphology_func = morphology_func
-		self.shape_func = shape_func
-		self.color_one = None
-		self.max_height = 0
-		self.current_img = None
+		self.set_funcs(morphology_func, shape_func)
+		
+		
 
 	"""
 	Peramiters: img - the image to preprocess
@@ -31,7 +32,6 @@ class Protractor:
 	"""
 	@staticmethod
 	def preprocess_image(img, blurs):
-		img = imutils.resize(img, width=600)
 		for i in range(blurs):
 			img = cv2.GaussianBlur(img, (11, 11), 0)
 		img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
@@ -44,7 +44,7 @@ class Protractor:
 	Description: Closes small unatural gaps in a black and white image
 	"""
 	@staticmethod
-	def morphology(img, rounds):
+	def morphology(img, rounds = 1):
 		for i in range(rounds):
 			img = cv2.erode(img, None, iterations=2)
 			img = cv2.dilate(img, None, iterations=2)
@@ -100,6 +100,14 @@ class Protractor:
 
 		feed.release()
 		cv2.destroyAllWindows()
+
+	def set_funcs(self, morphology_func = None, shape_func = None):
+		self.morphology_func = morphology_func
+		if morphology_func is None:
+			self.morphology_func = self.morphology
+		self.shape_func = shape_func
+		if shape_func is None:
+			self.shape_func = draw_rect
 
 	"""
 	Paramaters: feed - the image feed to process
