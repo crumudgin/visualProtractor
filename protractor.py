@@ -10,7 +10,7 @@ class Protractor:
 
 
 	"""
-	Parameters: accepted_varience - the acceptable varience within the color space
+	Parameters: accepted_varience - the acceptable variance within the color space
 				camera_source - the camera to read from
 				morphology_func - any function that takes a image and returns a black and white image
 				shape_func -  any function that takes contours and and an image, and returns an integer
@@ -28,7 +28,7 @@ class Protractor:
 	"""
 	Parameters: img - the image to preprocess
 	Returns: the preprocessed image
-	Description: Performs necissary operations on the provided image before obejct detection can be performed
+	Description: Performs necessary operations on the provided image before object detection can be performed
 	"""
 	@staticmethod
 	def preprocess_image(img, blurs):
@@ -41,7 +41,7 @@ class Protractor:
 	Parameters: img - the black and white image to apply the morphology too
 				rounds - the number of times the morphology should be applied
 	Returns: the image with the given morphology applied
-	Description: Closes small unatural gaps in a black and white image
+	Description: Closes small unnatural gaps in a black and white image
 	"""
 	@staticmethod
 	def morphology(img, rounds = 1):
@@ -51,7 +51,7 @@ class Protractor:
 		return img
 
 	"""
-	Parameters: mask - the black and white image whos contours will be discovered
+	Parameters: mask - the black and white image who's contours will be discovered
 	Returns: the contours of the provided mask
 	Description: fins the contours of the provided image so the object can be found within the image
 	"""
@@ -62,13 +62,13 @@ class Protractor:
 		return contours
 
 	"""
-	Paramaters: contours - the contours of the image that the rectangle will be extracted from
+	Parameters: contours - the contours of the image that the rectangle will be extracted from
 	Returns - the hight of the rectangle
 	Description - finds a rectangle based on the contours and calculates it's hight
 	"""
 	@staticmethod
 	def draw_rect(contours, current_img):
-		hight = 1 # 1 is the default to avoid deviding by 0
+		hight = 1 # 1 is the default to avoid dividing by 0
 		if len(contours) > 0:
 			rect_contour = max(contours, key=cv2.contourArea)
 			rect = cv2.minAreaRect(rect_contour)
@@ -82,7 +82,7 @@ class Protractor:
 
 
 	"""
-	Description: Opens the camera feed and manages the feed loop and the inputs the feed may recieve
+	Description: Opens the camera feed and manages the feed loop and the inputs the feed may receive
 	"""
 	def run_camera(self):
 		feed = cv2.VideoCapture(self.camera_source)
@@ -91,7 +91,7 @@ class Protractor:
 			key = cv2.waitKey(1) & 0xFF
 			if key == ord("q"):
 				break
-			elif key == ord("e"):
+			elif key == ord("r"):
 					print("!!!! RESETING HIGHT VALUE !!!!")
 					try:
 						self.max_height = hight
@@ -110,7 +110,7 @@ class Protractor:
 			self.shape_func = draw_rect
 
 	"""
-	Paramaters: feed - the image feed to process
+	Parameters: feed - the image feed to process
 	Returns: the result of the desired calculation
 	Description: does all the required operations to find/track an object and calculate its relative angle
 	"""
@@ -128,8 +128,8 @@ class Protractor:
 
 	"""
 	Parameters: event - the event that has taken place
-				x - the x coordanite of the event location
-				y - the y coordanite of the event location
+				x - the x coordinate of the event location
+				y - the y coordinate of the event location
 				flags - required for the function call, has no effect on the logic
 				params - required for the function call, has no effect on the logic
 	"""
@@ -139,10 +139,10 @@ class Protractor:
 		
 
 	"""
-	Paramaters: func - an optional function to be applied on the mask to compleete the masking process
+	Parameters: func - an optional function to be applied on the mask to complete the masking process
 				func_params - any params the function may need
 	Returns: the processed black and white mask
-	Description: sets all pixels that are within the accepted varience of the provided pixel to 255 and the rest to 0
+	Description: sets all pixels that are within the accepted variance of the provided pixel to 255 and the rest to 0
 	"""
 	def mask_color(self, func = None):
 		mask = cv2.inRange(self.current_img, self.color_one - self.accepted_varience, self.color_one + self.accepted_varience)
@@ -154,7 +154,7 @@ class Protractor:
 
 	"""
 	Returns - the hight of the object being tracked
-	Description - performs all opperations required to track an object within the image and calculates that objects hight
+	Description - performs all operations required to track an object within the image and calculates that objects hight
 	"""
 	def calc_hight(self):
 		mask = self.mask_color(self.morphology_func)
@@ -163,7 +163,7 @@ class Protractor:
 		return hight
 
 	"""
-	Paramaters: hight - the hight of the object being tracked
+	Parameters: hight - the hight of the object being tracked
 	Returns: the relative angle of the object
 	Description: calculates the relative angle of the tracked object with the initial hight (or hight on reset) being the initial starting
 				 position, and the current hight being the relative position
